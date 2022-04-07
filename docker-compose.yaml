@@ -1,0 +1,40 @@
+version: '3.5'
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: local
+      POSTGRES_PASSWORD: local
+      POSTGRES_DB: house_management
+    ports:
+      - 5432:5432
+  app:
+    restart: always
+    build: .
+    working_dir: /house_management
+    volumes:
+      - .:/house_management
+    container_name: house_management
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/house_management
+      - SPRING_DATASOURCE_USERNAME=local
+      - SPRING_DATASOURCE_PASSWORD=local
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+  nginx:
+    container_name: some-nginx
+    image: nginx:1.13
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
