@@ -51,16 +51,6 @@ public class HouseControllerIntegrationTest extends TestContainerConfig {
     }
 
     @Test
-    public void createHousesValidationFailTest() throws Exception {
-        this.mockMvc.perform(post(HOUSES_URL).contentType(MediaType.APPLICATION_JSON)
-                        .content(HouseTestFixture.HOUSE_DATA_INVALID))
-                .andExpect(status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description", Is.is("Description cannot be empty or null")))
-                .andExpect(MockMvcResultMatchers.content()
-                        .contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     public void findHouseByIdTest() throws Exception {
         val house = createHouse();
         this.mockMvc.perform(get(HOUSE_BY_ID_URL, house.getId()).accept(MediaTypes.HAL_JSON_VALUE))
