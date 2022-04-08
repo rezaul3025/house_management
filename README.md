@@ -8,7 +8,7 @@
     Springdoc openapi, lombok, Postgres SQL, Docker, Docker-compose, 
     Testcontainers, Nginx
 
-2. Java 11 and docker need to install.
+2. Java 11 and docker need to be install.
 
 3. Build, run instructions
 

@@ -12,7 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -74,8 +77,10 @@ public class HouseController implements HouseResource {
         return ResponseEntity.notFound().build();
     }
 
-    private ResponseEntity<?> getHouseResponseEntity() {
-        List<House> houseList = houseRepository.findAll();
+    private ResponseEntity<CollectionModel<HouseResponse>> getHouseResponseEntity() {
+        List<House> houseList = houseRepository.findAllByOrderByTitle();
+        Comparator<House> houseComparator = Comparator.comparing(House::getTitle);
+        houseList = houseList.stream().sorted(houseComparator).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(houseList)) {
             return ResponseEntity.notFound().build();
         }
